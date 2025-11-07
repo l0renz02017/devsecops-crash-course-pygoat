@@ -19,12 +19,4 @@ jobs:
 
     - name: Run Bandit Scan
       run: |
-        bandit -r . -f json -o bandit-results.json || true
-      # Continue even if Bandit finds issues (exit code 1)
-
-    - name: Upload Bandit results
-      uses: actions/upload-artifact@v4
-      with:
-        name: bandit-results
-        path: bandit-results.json
-        retention-days: 7
+        bandit -r .
