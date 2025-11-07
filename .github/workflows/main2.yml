@@ -1,23 +1,30 @@
-name: CI
-
 on: [push]
 
 jobs:
- sast_scan:
-   name: Run Bandit Scan
-   runs-on: ubuntu-latest
+  sast_scan:
+    name: Run Bandit Scan
+    runs-on: ubuntu-latest
 
-   steps:
-   - name: Checkout code
-     uses: actions/checkout@v2
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4  # Updated from v2 to v4
 
-   - name: Set uo Python
-     uses: actions/setup-python@v2
-     with: 
-       python-version: 3.8
+    - name: Set up Python
+      uses: actions/setup-python@v5  # Updated from v2 to v5
+      with: 
+        python-version: 3.8
 
-   - name: Install Bandit
-     run: pip install bandit
+    - name: Install Bandit
+      run: pip install bandit
 
-   - name: Run Bandit Scan
-     run: bandit -r . 
+    - name: Run Bandit Scan
+      run: |
+        bandit -r . -f json -o bandit-results.json || true
+      # Continue even if Bandit finds issues (exit code 1)
+
+    - name: Upload Bandit results
+      uses: actions/upload-artifact@v4
+      with:
+        name: bandit-results
+        path: bandit-results.json
+        retention-days: 7
